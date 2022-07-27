@@ -67,66 +67,30 @@ def adder(x, y, soma, carry):
 
 
 @block
-def bin2bcdAdd3(din, dout):
-    # implements with LUT
+def adderModbv(x, y, soma, carry):
     @always_comb
     def comb():
-        if din == 0:
-            dout.next = 0
-        elif din == 1:
-            dout.next = 1
-        elif din == 2:
-            dout.next = 2
-        elif din == 3:
-            dout.next = 3
-        elif din == 4:
-            dout.next = 4
-        elif din == 5:
-            dout.next = 8
-        elif din == 6:
-            dout.next = 9
-        elif din == 7:
-            dout.next = 10
-        elif din == 8:
-            dout.next = 11
-        elif din == 9:
-            dout.next = 12
+        sum = x + y
+        soma.next = sum
+        if sum > x.max - 1:
+            carry.next = 1
         else:
-            dout.next = 0
+            carry.next = 0
 
-    return instances()
+    return comb
 
 
 @block
-def bin2bcd(dig2, dig1, dig0, din):
-
-    c1, c2, c3, c4, c5, c6, c7 = [Signal(intbv()[4:]) for i in range(7)]
-
-    d1 = ConcatSignal(Signal(bool(0)), din[7:5])
-    d2 = ConcatSignal(c1[2:0], din[4])
-    d3 = ConcatSignal(c2[2:0], din[3])
-    d4 = ConcatSignal(c3[2:0], din[2])
-    d5 = ConcatSignal(c4[2:0], din[1])
-    d6 = ConcatSignal(Signal(bool(0)), c1[3], c2[3], c3[3])
-    d7 = ConcatSignal(c6[2:0], c4[3])
-
-    add1 = bin2bcdAdd3(d1, c1)
-    add2 = bin2bcdAdd3(d2, c2)
-    add3 = bin2bcdAdd3(d3, c3)
-    add4 = bin2bcdAdd3(d4, c4)
-    add5 = bin2bcdAdd3(d5, c5)
-    add6 = bin2bcdAdd3(d6, c6)
-    add7 = bin2bcdAdd3(d7, c7)
-
-    dig2 = ConcatSignal(c5[2:0], din[0])
-    dig1 = ConcatSignal(c7[2:0], c5[3])
-    dig0 = ConcatSignal(c6[3], c7[3])
+def addBcd(x1, x0, y1, y0):
+    n0 = ConcatSignal(x1, x0)
+    n1 = ConcatSignal(y1, y0)
 
     @always_comb
     def comb():
-        print("d5:")
-        print(bin(d5, 8))
-        print(bin(d5[2:0], 3))
-        print(bin(din[0], 1))
+        s = n0 + n1
+        breakpoint()
+        if s[8:] > 9:
+            s = s + 6
+        print(bin(s, 16))
 
-    return instances()
+    return comb
