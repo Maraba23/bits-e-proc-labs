@@ -27,6 +27,12 @@ def toplevel(LEDR, SW, KEY, HEX0, HEX1, HEX2, HEX3, HEX4, HEX5, CLOCK_50, RESET_
 
     # ledr_unsigned = ConcatSignal(*reversed(ledr_s))
     # ic2 = bin2hex(HEX0, ledr_unsigned)
+    x = Signal(modbv()[2:])
+    y = Signal(modbv()[2:])
+    ss = Signal(modbv()[2:])
+    c = Signal(bool())
+
+    ic3 = adderIntbv(x, y, ss, c)
 
     # ---------------------------------------- #
     # seq
@@ -34,11 +40,18 @@ def toplevel(LEDR, SW, KEY, HEX0, HEX1, HEX2, HEX3, HEX4, HEX5, CLOCK_50, RESET_
     # ic1 = blinkLed(ledr_s[0], 100, CLOCK_50, RESET_N)
     # ic2 = blinkLed(ledr_s[1], 50, CLOCK_50, RESET_N)
     # ic3 = blinkLed(ledr_s[2], 1000, CLOCK_50, RESET_N)
-    ic4 = barLed(LEDR, 100, sw_s[0], sw_s[1], CLOCK_50, RESET_N)
+    # ic4 = barLed(LEDR, 100, sw_s[0], sw_s[1], CLOCK_50, RESET_N)
 
     # ---------------------------------------- #
-    # @always_comb
-    # def comb():
+    @always_comb
+    def comb():
+        x.next = SW[2:0]
+        y.next = SW[2:0]
+        LEDR.next[2:0] = ss
+        # for i in range(2):
+        #    LEDR[i].next = ss[i]
+        LEDR.next[3] = c
+
     #    for i in range(len(ledr_s)):
     #        LEDR[i].next = ledr_s[i]
 
