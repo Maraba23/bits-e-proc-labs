@@ -2,3 +2,7 @@
 *.egg
 build
 htmlcov
+*.vcd
+*.vhd
+*.v
+.direnv/

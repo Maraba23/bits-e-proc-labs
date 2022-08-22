@@ -29,7 +29,7 @@ def runAdder2bits():
             print("--------------------")
             print(
                 " x    : %s\n y    : %s\n soma : %s\n carry: %s"
-                % (bin(x, 2), bin(y, 2), bin(s, 2), bin(c))
+                % (bin(x, 2), bin(y, 2), bin(s, 2), bin(carry))
             )
             print("--------------------")
 
