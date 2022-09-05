@@ -19,7 +19,12 @@ def pytest_runtest_makereport(item, call):
 def pytest_sessionfinish(session, exitstatus):
     t = telemetry("embarcados")
     for v in session.results:
-        log = {"id": v["nodeid"], "status": v["outcome"]}
+        name = v["nodeid"].split("::")[1]
+        status = t.statusOk
+        log = {"id": name, "status": v["outcome"]}
+
         if log["status"] == "failed":
             log["msg"] = v["longrepr"]["reprcrash"]["message"]
-        t.push(log)
+            status = t.statusFail
+
+        t.push(log, name, status, channel="lab-comb")
