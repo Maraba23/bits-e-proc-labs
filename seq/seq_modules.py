@@ -7,8 +7,6 @@
 import math
 from myhdl import *
 
-# from ula.ula_modules import adder
-
 
 @block
 def dff(q, d, clk, rst):
@@ -101,41 +99,5 @@ def barLed2(leds, time_ms, clk, rst):
     @always_comb
     def comb():
         leds.next = intbv(1)[10:] << cntLed
-
-    return instances()
-
-
-@block
-def doubleDabble(din, clk, rst):
-
-    bcd = Signal(modbv(0)[12:])
-    cnt = Signal(intbv(0)[8:])
-    b = Signal(0)[12:0]
-
-    @always(clk.posedge)
-    def seq():
-        print(bin(bcd[4:0], 4))
-        print("%s" % bin(bcd[8:4], 4))
-        print("%s" % (bin(bcd[12:8], 4)))
-        print(cnt)
-        print("-----")
-        if cnt < 8:
-            bcd.next = bcd << 1
-            if bcd[8:4] < 5 and bcd[12:8] < 5:
-                cnt.next = cnt + 1
-
-            if bcd[8:4] >= 5:
-                print("add L")
-                bcd[8:4].next = bcd[8:4] + 3
-
-            if bcd[12:8] >= 5:
-                print("add H")
-                bcd[12:8].next = bcd[12:8] + 3
-
-        else:
-            print("----------------------")
-            print("%s %s" % (bin(bcd[12:8], 4), bin(bcd[8:4], 4)))
-            bcd.next = din
-            cnt.next = 0
 
     return instances()

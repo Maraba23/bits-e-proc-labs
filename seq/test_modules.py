@@ -2,27 +2,30 @@
 # -*- coding: utf-8 -*-
 
 from myhdl import *
-from seq_modules import *
+from .seq_modules import *
 
 
-@block
-def test_dd():
+def test_dff():
     rst = ResetSignal(0, active=1, isasync=True)
     clk = Signal(bool(0))
-    din = Signal(intbv(14)[8:])
-    d_1 = doubleDabble(din, clk, rst)
+    q, d = [Signal(bool(0)) for i in range(2)]
+    dut1 = dff(q, d, clk, rst)
 
-    @always(delay(1))
+    @always(delay(5))
     def clkgen():
         clk.next = not clk
 
     @instance
     def stimulus():
-        yield delay(1)
+        d.next = 1
+        yield clk.negedge
+        assert q == 1
 
-    return instances()
+        d.next = 0
+        yield clk.negedge
+        assert q == 0
 
-
-tb = test_dd()
-# sim = Simulation(tb)
-tb.run_sim(200)
+    sim = Simulation(dut1, [stimulus, clkgen])
+    traceSignals(dut1)
+    sim.run(20)
+    sim.quit()
