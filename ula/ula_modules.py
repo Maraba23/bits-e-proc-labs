@@ -78,19 +78,3 @@ def adderModbv(x, y, soma, carry):
             carry.next = 0
 
     return comb
-
-
-@block
-def addBcd(x1, x0, y1, y0):
-    n0 = ConcatSignal(x1, x0)
-    n1 = ConcatSignal(y1, y0)
-
-    @always_comb
-    def comb():
-        s = n0 + n1
-        breakpoint()
-        if s[8:] > 9:
-            s = s + 6
-        print(bin(s, 16))
-
-    return comb

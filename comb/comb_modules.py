@@ -156,35 +156,3 @@ def bin2hex(hex0, sw):
             hex0.next = "0001110"
 
     return instances()
-
-
-@block
-def bin2bcd(dig2, dig1, dig0, sw):
-    @always_comb
-    def comb():
-        h2 = Signal(modbv(0)[4:])
-        h1 = Signal(modbv(0)[4:])
-        h0 = Signal(modbv(0)[4:])
-
-        for i in range(7):
-            if h2 >= 5:
-                h2.next = h2 + 3
-            if h1 >= 5:
-                h1.next = h1 + 3
-            if h0 >= 5:
-                h0.next = h0 + 3
-
-            h2.next = h2 << 1
-            h2[0].next = h1[3]
-
-            h1.next = h1 << 1
-            h1[0].next = h0[3]
-
-            h0.next = h0 << 1
-            h0[0].next = sw[i]
-
-        dig2.next = h2
-        dig1.next = h1
-        dig0.next = h0
-
-    return instances()
